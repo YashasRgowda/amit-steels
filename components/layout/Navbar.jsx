@@ -8,54 +8,40 @@ import { Menu, X } from "lucide-react";
 import Container from "@/components/common/Container";
 import { NAV_ITEMS } from "@/lib/constants";
 
-const prefersReducedMotion =
-    typeof window !== "undefined"
-        ? window.matchMedia("(prefers-reduced-motion: reduce)").matches
-        : false;
+// Premium easing — matches the site-wide curve
+const premiumEase = [0.16, 1, 0.3, 1];
 
-const navVariants = {
-    hidden: { opacity: 0, y: prefersReducedMotion ? 0 : -16 },
+// Single unified fade-in for the entire navbar.
+// No per-item stagger. No Y slide-down. The navbar feels "always there" —
+// just gently materializing as the page settles. Linear / Vercel / Apple pattern.
+const navEntrance = {
+    hidden: { opacity: 0 },
     visible: {
         opacity: 1,
-        y: 0,
-        transition: { duration: 0.4, ease: "easeOut" },
+        transition: { duration: 0.7, ease: premiumEase, delay: 0.15 },
     },
 };
 
-const linkVariants = {
-    hidden: { opacity: 0, y: prefersReducedMotion ? 0 : -8 },
-    visible: (i) => ({
-        opacity: 1,
-        y: 0,
-        transition: {
-            delay: prefersReducedMotion ? 0 : i * 0.05 + 0.2,
-            duration: 0.3,
-            ease: "easeOut",
-        },
-    }),
-};
-
+// Mobile menu overlay animations (separate from entrance — these play on user interaction)
 const mobileMenuVariants = {
-    hidden: { opacity: 0, y: prefersReducedMotion ? 0 : -20 },
+    hidden: { opacity: 0 },
     visible: {
         opacity: 1,
-        y: 0,
         transition: { duration: 0.3, ease: "easeOut" },
     },
     exit: {
         opacity: 0,
-        y: prefersReducedMotion ? 0 : -20,
         transition: { duration: 0.2, ease: "easeIn" },
     },
 };
 
 const mobileLinkVariants = {
-    hidden: { opacity: 0, x: prefersReducedMotion ? 0 : -20 },
+    hidden: { opacity: 0, x: -20 },
     visible: (i) => ({
         opacity: 1,
         x: 0,
         transition: {
-            delay: prefersReducedMotion ? 0 : i * 0.06 + 0.1,
+            delay: i * 0.06 + 0.1,
             duration: 0.3,
             ease: "easeOut",
         },
@@ -93,7 +79,7 @@ export default function Navbar() {
                 aria-label="Main navigation"
                 initial="hidden"
                 animate="visible"
-                variants={navVariants}
+                variants={navEntrance}
                 className={[
                     "fixed left-0 right-0 top-0 z-50 transition-all duration-300",
                     scrolled
@@ -128,17 +114,10 @@ export default function Navbar() {
 
                         {/* ── Desktop Nav Links ── */}
                         <div className="hidden items-center gap-1 md:flex" role="list">
-                            {NAV_ITEMS.map((item, i) => {
+                            {NAV_ITEMS.map((item) => {
                                 const isActive = pathname === item.href;
                                 return (
-                                    <motion.div
-                                        key={item.href}
-                                        role="listitem"
-                                        custom={i}
-                                        initial="hidden"
-                                        animate="visible"
-                                        variants={linkVariants}
-                                    >
+                                    <div key={item.href} role="listitem">
                                         <Link
                                             href={item.href}
                                             className={[
@@ -159,26 +138,20 @@ export default function Navbar() {
                                                 aria-hidden="true"
                                             />
                                         </Link>
-                                    </motion.div>
+                                    </div>
                                 );
                             })}
                         </div>
 
                         {/* ── Desktop CTA ── */}
-                        <motion.div
-                            custom={NAV_ITEMS.length}
-                            initial="hidden"
-                            animate="visible"
-                            variants={linkVariants}
-                            className="hidden md:block"
-                        >
+                        <div className="hidden md:block">
                             <Link
                                 href="/contact"
                                 className="inline-flex min-h-[44px] items-center justify-center bg-gold px-5 py-2 font-body text-[13px] font-semibold uppercase tracking-widest text-deep-navy transition-colors duration-200 hover:bg-gold-glow focus:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-deep-navy lg:px-6"
                             >
                                 Request a Quote
                             </Link>
-                        </motion.div>
+                        </div>
 
                         {/* ── Hamburger (mobile only) ── */}
                         <button
