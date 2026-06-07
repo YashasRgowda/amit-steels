@@ -2,6 +2,7 @@ import { Playfair_Display, Inter } from "next/font/google";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import SmoothScroll from "@/components/common/SmoothScroll";
+import ScrollToTop from "@/components/common/ScrollToTop";
 import "./globals.css";
 
 const playfair = Playfair_Display({
@@ -74,6 +75,7 @@ export default function RootLayout({ children }) {
     >
       <body className="font-body bg-off-white text-charcoal overflow-x-hidden">
         <SmoothScroll>
+          <ScrollToTop />
           <Navbar />
           <main id="main-content">
             {children}

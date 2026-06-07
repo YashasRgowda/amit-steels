@@ -133,7 +133,7 @@
 
 /* html gets deep-navy so macOS/iOS overscroll bounce shows navy, not white */
 html {
-  scroll-behavior: smooth;
+  scroll-behavior: auto;
   background-color: var(--color-deep-navy);
 }
 

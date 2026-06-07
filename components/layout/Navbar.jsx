@@ -5,15 +5,12 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
+import Image from "next/image";
 import Container from "@/components/common/Container";
 import { NAV_ITEMS } from "@/lib/constants";
 
-// Premium easing — matches the site-wide curve
 const premiumEase = [0.16, 1, 0.3, 1];
 
-// Single unified fade-in for the entire navbar.
-// No per-item stagger. No Y slide-down. The navbar feels "always there" —
-// just gently materializing as the page settles. Linear / Vercel / Apple pattern.
 const navEntrance = {
     hidden: { opacity: 0 },
     visible: {
@@ -22,17 +19,10 @@ const navEntrance = {
     },
 };
 
-// Mobile menu overlay animations (separate from entrance — these play on user interaction)
 const mobileMenuVariants = {
     hidden: { opacity: 0 },
-    visible: {
-        opacity: 1,
-        transition: { duration: 0.3, ease: "easeOut" },
-    },
-    exit: {
-        opacity: 0,
-        transition: { duration: 0.2, ease: "easeIn" },
-    },
+    visible: { opacity: 1, transition: { duration: 0.3, ease: "easeOut" } },
+    exit: { opacity: 0, transition: { duration: 0.2, ease: "easeIn" } },
 };
 
 const mobileLinkVariants = {
@@ -40,11 +30,7 @@ const mobileLinkVariants = {
     visible: (i) => ({
         opacity: 1,
         x: 0,
-        transition: {
-            delay: i * 0.06 + 0.1,
-            duration: 0.3,
-            ease: "easeOut",
-        },
+        transition: { delay: i * 0.06 + 0.1, duration: 0.3, ease: "easeOut" },
     }),
 };
 
@@ -62,15 +48,11 @@ export default function Navbar() {
         return () => window.removeEventListener("scroll", handleScroll);
     }, [handleScroll]);
 
-    useEffect(() => {
-        setMobileOpen(false);
-    }, [pathname]);
+    useEffect(() => { setMobileOpen(false); }, [pathname]);
 
     useEffect(() => {
         document.body.style.overflow = mobileOpen ? "hidden" : "";
-        return () => {
-            document.body.style.overflow = "";
-        };
+        return () => { document.body.style.overflow = ""; };
     }, [mobileOpen]);
 
     return (
@@ -90,26 +72,20 @@ export default function Navbar() {
                 <Container>
                     <div className="flex h-20 items-center justify-between md:h-24">
 
-                        {/* ── Logo ── */}
+                        {/* ── Logo — one single instance, responsive via className ── */}
                         <Link
                             href="/"
                             aria-label="Amit Steel and Cement — Home"
-                            className="flex flex-col leading-none focus:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
+                            className="flex items-center focus:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
                         >
-                            {/* Full brand name — never drop STEEL */}
-                            <span
-                                className="font-display font-bold leading-none text-white"
-                                style={{ fontSize: "clamp(1rem, 2.5vw, 1.4rem)" }}
-                            >
-                                AMIT STEEL{" "}
-                                <span className="text-gold">&amp;</span>{" "}
-                                CEMENT
-                            </span>
-                            {/* Subtitle */}
-                            <span className="mt-1 flex items-center gap-1.5 font-body text-[10px] uppercase tracking-[0.2em] text-white/50 md:text-[11px]">
-                                <span className="inline-block h-1 w-1 rounded-full bg-gold/60" aria-hidden="true" />
-                                Steel Distributor · Bengaluru
-                            </span>
+                            <Image
+                                src="/images/logo.png"
+                                alt="Amit Steel & Cement"
+                                height={80}
+                                width={280}
+                                className="h-14 w-auto object-contain sm:h-16 md:h-20 lg:h-24"
+                                priority
+                            />
                         </Link>
 
                         {/* ── Desktop Nav Links ── */}
@@ -122,18 +98,14 @@ export default function Navbar() {
                                             href={item.href}
                                             className={[
                                                 "group relative px-3 py-2 font-body text-sm font-medium uppercase tracking-wider transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-gold lg:px-4 lg:text-[13px]",
-                                                isActive
-                                                    ? "text-gold"
-                                                    : "text-white/80 hover:text-gold",
+                                                isActive ? "text-gold" : "text-white/80 hover:text-gold",
                                             ].join(" ")}
                                         >
                                             {item.name}
                                             <span
                                                 className={[
                                                     "absolute bottom-0 left-3 right-3 h-[2px] origin-left bg-gold transition-transform duration-300 ease-out",
-                                                    isActive
-                                                        ? "scale-x-100"
-                                                        : "scale-x-0 group-hover:scale-x-100",
+                                                    isActive ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100",
                                                 ].join(" ")}
                                                 aria-hidden="true"
                                             />
@@ -204,6 +176,7 @@ export default function Navbar() {
                         variants={mobileMenuVariants}
                         className="fixed inset-0 z-40 flex flex-col bg-deep-navy md:hidden"
                     >
+                        {/* Spacer for the fixed navbar height — no logo here, navbar logo is already visible above */}
                         <div className="h-20" aria-hidden="true" />
 
                         <nav className="flex flex-1 flex-col items-center justify-center gap-2 px-6">
