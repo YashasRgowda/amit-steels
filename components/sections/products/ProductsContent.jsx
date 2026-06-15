@@ -123,7 +123,7 @@ export const CATALOGUE = [
                 slug: "ms-pipes",
                 name: "MS Black & GI Pipes",
                 tagline: "ERW welded · Black & galvanised · Water & structural",
-                img: "/images/products/steels/MS-Black-GI-Pipes.png",
+                img: "/images/products/steels/MS-Black-GI-pipes.png",
                 unit: "per MT",
                 brands: ["Mony Steel & Ispat", "A-One Ispat"],
                 useCase: "Water supply, plumbing, scaffolding, structural",
