@@ -4,11 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
-import {
-    Plus, Minus, ShoppingList, ArrowRight,
-    MessageCircle, Phone, ChevronDown, ChevronUp,
-    Tag, Zap, Info, X
-} from "lucide-react";
+import { Plus, Minus, X, ArrowRight, MessageCircle, Phone, ChevronRight } from "lucide-react";
 import { FaWhatsapp } from "react-icons/fa";
 import Container from "@/components/common/Container";
 import { viewport } from "@/lib/animations";
@@ -16,147 +12,280 @@ import { CONTACT } from "@/lib/constants";
 
 const ease = [0.16, 1, 0.3, 1];
 
-// ── PRODUCT DATA ───────────────────────────────────────────────────────────
-// Update images, specs, prices, brands when Amit sir provides them
-const CATEGORIES = [
+// ─── CATALOGUE ────────────────────────────────────────────────────────────────
+export const CATALOGUE = [
     {
-        id: "steel",
-        label: "Steel Products",
+        category: "Bars & Rods",
+        tagline: "The backbone of every structure.",
         products: [
             {
                 id: "tmt-bars",
+                slug: "tmt-bars",
                 name: "TMT Bars",
-                tagline: "High-strength · Earthquake resistant",
-                img: "/images/products/tmt-bars.png",
+                tagline: "High-strength · Earthquake resistant · Grade certified",
+                img: "/images/products/steels/tmt-bars.png",
                 unit: "per MT",
-                marketPrice: 58000,
-                ourPrice: 54500,
-                specs: [
-                    { label: "Grades", value: "Fe415 · Fe500 · Fe550 · Fe600" },
-                    { label: "Sizes", value: "8mm · 10mm · 12mm · 16mm · 20mm · 25mm · 32mm" },
-                    { label: "Standard", value: "IS 1786:2008" },
-                    { label: "Min Order", value: "1 MT" },
-                ],
                 brands: ["JSW Steel", "Sunvik Gold", "Magna"],
+                useCase: "RCC columns, slabs, beams, foundations",
+                hasTechSpecs: true,
             },
             {
-                id: "ms-steel",
-                name: "MS Steel",
-                tagline: "Mild steel · Fabrication ready",
-                img: "/images/products/ms-steel.png",
+                id: "ms-round-bars",
+                slug: "ms-round-bars",
+                name: "MS Round Bars",
+                tagline: "Precision machined · Fabrication ready · Multiple grades",
+                img: "/images/products/steels/ms-round-bars.png",
                 unit: "per MT",
-                marketPrice: 55000,
-                ourPrice: 51500,
-                specs: [
-                    { label: "Types", value: "Flat · Round · Square · Hexagonal" },
-                    { label: "Sizes", value: "6mm – 100mm (various profiles)" },
-                    { label: "Standard", value: "IS 2062:2011" },
-                    { label: "Min Order", value: "1 MT" },
-                ],
-                brands: ["JSW Steel", "Shri Bajrang Power", "A-One Ispat"],
-            },
-            {
-                id: "structural-steel",
-                name: "Structural Steel",
-                tagline: "Angles · Channels · Beams · Columns",
-                img: "/images/products/structural-steel.png",
-                unit: "per MT",
-                marketPrice: 57000,
-                ourPrice: 53000,
-                specs: [
-                    { label: "Sections", value: "Angles · Channels · I-Beams · H-Beams" },
-                    { label: "Sizes", value: "25×25mm – 200×200mm" },
-                    { label: "Standard", value: "IS 2062 · IS 808" },
-                    { label: "Min Order", value: "1 MT" },
-                ],
                 brands: ["JSW Steel", "Shri Bajrang Power"],
+                useCase: "Machining, fabrication, general engineering",
+                hasTechSpecs: true,
             },
             {
-                id: "steel-tubes",
-                name: "Steel Tubes & Pipes",
-                tagline: "Hollow sections · Structural pipes",
-                img: "/images/products/steel-tubes.png",
+                id: "ms-flat-bars",
+                slug: "ms-flat-bars",
+                name: "MS Flat Bars",
+                tagline: "Versatile flat sections · Weldable · High machinability",
+                img: "/images/products/steels/ms-flat-bars.png",
                 unit: "per MT",
-                marketPrice: 62000,
-                ourPrice: 58000,
-                specs: [
-                    { label: "Types", value: "Square · Rectangular · Round hollow sections" },
-                    { label: "Sizes", value: "½″ – 6″ · Wall thickness 1.6mm – 6mm" },
-                    { label: "Standard", value: "IS 1161 · IS 4923" },
-                    { label: "Min Order", value: "500 kg" },
-                ],
-                brands: ["Mony Steel & Ispat", "A-One Ispat"],
+                brands: ["JSW Steel", "A-One Ispat"],
+                useCase: "Gates, grills, support frames, brackets",
+                hasTechSpecs: true,
             },
             {
                 id: "binding-wire",
-                name: "Binding Wire",
-                tagline: "Construction grade · Annealed",
-                img: "/images/products/tmt-bars.png", // ← replace with binding-wire.png
+                slug: "binding-wire",
+                name: "MS Binding Wire",
+                tagline: "Construction grade · Black annealed · Flexible & strong",
+                img: "/images/products/steels/ms-binding-wire.png",
                 unit: "per coil",
-                marketPrice: 6500,
-                ourPrice: 5800,
-                specs: [
-                    { label: "Gauge", value: "18G · 20G · 22G" },
-                    { label: "Weight", value: "25 kg per coil" },
-                    { label: "Type", value: "Black annealed wire" },
-                    { label: "Min Order", value: "10 coils" },
-                ],
-                brands: ["JSW Steel", "Sunvik Gold", "Magna"],
+                brands: ["JSW Steel", "Sunvik Gold"],
+                useCase: "Tying TMT bars during RCC construction",
+                hasTechSpecs: true,
+            },
+            {
+                id: "gi-wire",
+                slug: "gi-wire",
+                name: "GI Wire",
+                tagline: "Galvanised · Corrosion resistant · Industrial & agricultural",
+                img: "/images/products/steels/gi-wire.png",
+                unit: "per coil",
+                brands: ["JSW Steel", "A-One Ispat"],
+                useCase: "Fencing, agriculture, general binding, packaging",
+                hasTechSpecs: true,
             },
         ],
     },
     {
-        id: "cement",
-        label: "Cement",
+        category: "Structural Steel",
+        tagline: "The frame that holds Karnataka's skyline.",
         products: [
             {
-                id: "opc-cement",
-                name: "OPC Cement",
-                tagline: "Ordinary Portland · 43 & 53 Grade",
-                img: "/images/products/cement.png",
-                unit: "per bag (50kg)",
-                marketPrice: 420,
-                ourPrice: 385,
-                specs: [
-                    { label: "Grades", value: "OPC 43 · OPC 53" },
-                    { label: "Weight", value: "50 kg per bag" },
-                    { label: "Standard", value: "IS 8112 · IS 12269" },
-                    { label: "Min Order", value: "100 bags" },
-                ],
-                brands: ["Birla Super", "UltraTech", "Dalmia"],
+                id: "ms-beams",
+                slug: "ms-beams",
+                name: "MS Beams (I & H)",
+                tagline: "Universal beams · Wide flange · Structural grade",
+                img: "/images/products/steels/ms-beams.png",
+                unit: "per MT",
+                brands: ["JSW Steel", "Shri Bajrang Power"],
+                useCase: "Industrial sheds, mezzanine floors, bridges",
+                hasTechSpecs: true,
             },
             {
-                id: "ppc-cement",
-                name: "PPC Cement",
-                tagline: "Portland Pozzolana · High durability",
-                img: "/images/products/cement.png",
-                unit: "per bag (50kg)",
-                marketPrice: 400,
-                ourPrice: 368,
-                specs: [
-                    { label: "Type", value: "Portland Pozzolana Cement" },
-                    { label: "Weight", value: "50 kg per bag" },
-                    { label: "Standard", value: "IS 1489 (Part 1)" },
-                    { label: "Min Order", value: "100 bags" },
-                ],
-                brands: ["Priya Cement", "Ramco", "Zuari"],
+                id: "ms-channels",
+                slug: "ms-channels",
+                name: "MS Channels",
+                tagline: "C-sections · Parallel flange · Load bearing",
+                img: "/images/products/steels/ms-channels.png",
+                unit: "per MT",
+                brands: ["JSW Steel", "A-One Ispat"],
+                useCase: "Purlins, roof structures, support channels",
+                hasTechSpecs: true,
             },
+            {
+                id: "ms-angles",
+                slug: "ms-angles",
+                name: "MS Angles",
+                tagline: "Equal & unequal · L-sections · Structural framing",
+                img: "/images/products/steels/ms-angles.png",
+                unit: "per MT",
+                brands: ["JSW Steel", "Shri Bajrang Power"],
+                useCase: "Towers, trusses, frames, supports",
+                hasTechSpecs: true,
+            },
+        ],
+    },
+    {
+        category: "Pipes & Hollow Sections",
+        tagline: "Precision formed. Structurally uncompromising.",
+        products: [
+            {
+                id: "ms-pipes",
+                slug: "ms-pipes",
+                name: "MS Black & GI Pipes",
+                tagline: "ERW welded · Black & galvanised · Water & structural",
+                img: "/images/products/steels/MS-Black-GI-Pipes.png",
+                unit: "per MT",
+                brands: ["Mony Steel & Ispat", "A-One Ispat"],
+                useCase: "Water supply, plumbing, scaffolding, structural",
+                hasTechSpecs: true,
+            },
+            {
+                id: "square-hollow",
+                slug: "square-hollow",
+                name: "Square & Rectangular Hollow Sections",
+                tagline: "SHS · RHS · Cold formed · Precision welded",
+                img: "/images/products/steels/Square-&-Rectangular-Hollow-Sections.png",
+                unit: "per MT",
+                brands: ["Mony Steel & Ispat", "A-One Ispat"],
+                useCase: "Gates, railings, furniture frames, trusses",
+                hasTechSpecs: true,
+            },
+        ],
+    },
+    {
+        category: "Sheets & Plates",
+        tagline: "Industrial strength. Surface to surface.",
+        products: [
+            {
+                id: "hr-sheets",
+                slug: "hr-sheets",
+                name: "Hot Rolled Sheets & Plates",
+                tagline: "HR coils · Heavy plates · Structural & fabrication grade",
+                img: "/images/products/steels/Hot Rolled Sheets & Plates.png",
+                unit: "per MT",
+                brands: ["JSW Steel", "Shri Bajrang Power"],
+                useCase: "Fabrication, construction shuttering, machinery",
+                hasTechSpecs: true,
+            },
+            {
+                id: "cr-sheets",
+                slug: "cr-sheets",
+                name: "Cold Rolled Sheets",
+                tagline: "Smooth surface · Tight tolerance · Precision finish",
+                img: "/images/products/steels/Cold Rolled Sheets.png",
+                unit: "per MT",
+                brands: ["JSW Steel"],
+                useCase: "Automotive panels, appliances, precision fabrication",
+                hasTechSpecs: true,
+            },
+            {
+                id: "colour-roofing",
+                slug: "colour-roofing",
+                name: "Colour Roofing Sheets",
+                tagline: "Pre-painted · Weather resistant · Long-span coverage",
+                img: "/images/products/steels/Colour Roofing Sheets.png",
+                unit: "per sheet",
+                brands: ["JSW Steel", "Shri Bajrang Power"],
+                useCase: "Industrial roofing, factory sheds, warehouses, commercial buildings",
+                hasTechSpecs: true,
+            },
+            {
+                id: "gi-corrugated",
+                slug: "gi-corrugated",
+                name: "Galvanised Corrugated Sheets",
+                tagline: "Hot-dip galvanised · Rust proof · Lightweight roofing",
+                img: "/images/products/steels/Galvanised Corrugated Sheets.png",
+                unit: "per sheet",
+                brands: ["JSW Steel"],
+                useCase: "Agricultural sheds, site compounds, low-cost roofing",
+                hasTechSpecs: true,
+            },
+        ],
+    },
+    {
+        category: "Fencing & Wire Products",
+        tagline: "Boundary solutions that last decades.",
+        products: [
+            {
+                id: "gi-chain-link",
+                slug: "gi-chain-link",
+                name: "GI Chain Link Fence",
+                tagline: "Diamond mesh · Galvanised · Perimeter security",
+                img: "/images/products/steels/GI Chain Link Fence.png",
+                unit: "per roll",
+                brands: ["A-One Ispat", "JSW Steel"],
+                useCase: "Site perimeter, residential boundary, sports courts, farms",
+                hasTechSpecs: true,
+            },
+            {
+                id: "barbed-wire",
+                slug: "barbed-wire",
+                name: "Barbed Fencing Wire",
+                tagline: "High tensile · Double strand · GI coated",
+                img: "/images/products/steels/Barbed Fencing Wire.png",
+                unit: "per roll",
+                brands: ["A-One Ispat"],
+                useCase: "Agricultural fencing, security perimeters, boundary walls",
+                hasTechSpecs: true,
+            },
+        ],
+    },
+    {
+        category: "Cement",
+        tagline: "Every bag backed by grade, every pour backed by trust.",
+        products: [
+            {
+                id: "ramco-cement",
+                slug: null,
+                name: "Ramco Cement",
+                tagline: "OPC 43 · OPC 53 · PPC · Trusted across South India",
+                img: "/images/products/cements/ramco.png",
+                unit: "per bag (50kg)",
+                brands: ["Ramco"],
+                useCase: "RCC structures, foundations, plastering, waterproofing",
+                hasTechSpecs: false,
+            },
+            {
+                id: "zuari-cement",
+                slug: null,
+                name: "Zuari Cement",
+                tagline: "OPC 43 · OPC 53 · PPC · Consistent quality",
+                img: "/images/products/cements/zuari.png",
+                unit: "per bag (50kg)",
+                brands: ["Zuari"],
+                useCase: "RCC structures, foundations, plastering, columns",
+                hasTechSpecs: false,
+            },
+            {
+                id: "priya-cement",
+                slug: null,
+                name: "Priya Cement",
+                tagline: "OPC 43 · OPC 53 · PPC · Popular in Karnataka",
+                img: "/images/products/cements/priya.png",
+                unit: "per bag (50kg)",
+                brands: ["Priya Cement"],
+                useCase: "Residential construction, slabs, beams, plastering",
+                hasTechSpecs: false,
+            },
+            {
+                id: "bharathi-cement",
+                slug: null,
+                name: "Bharathi Cement",
+                tagline: "OPC 43 · OPC 53 · PPC · High early strength",
+                img: "/images/products/cements/bharathi.png",
+                unit: "per bag (50kg)",
+                brands: ["Bharathi Cement"],
+                useCase: "Foundations, RCC columns, roads, mass concrete",
+                hasTechSpecs: false,
+            },
+            {
+                id: "ultratech-cement",
+                slug: null,
+                name: "UltraTech Cement",
+                tagline: "OPC 43 · OPC 53 · PPC · India's #1 cement brand",
+                img: "/images/products/cements/ultratech.jpg",
+                unit: "per bag (50kg)",
+                brands: ["UltraTech"],
+                useCase: "All construction — residential, commercial, infrastructure",
+                hasTechSpecs: false,
+            },
+
         ],
     },
 ];
 
-// ── Helpers ────────────────────────────────────────────────────────────────
-function formatPrice(n) {
-    return "₹" + n.toLocaleString("en-IN");
-}
-
-function savings(market, ours) {
-    return Math.round(((market - ours) / market) * 100);
-}
-
-// ── Product Card ───────────────────────────────────────────────────────────
-function ProductCard({ product, cartItem, onAdd, onRemove }) {
-    const [expanded, setExpanded] = useState(false);
+// ─── Product Card ─────────────────────────────────────────────────────────────
+function ProductCard({ product, cartItem, onAdd, onRemove, isCement = false }) {
     const inCart = cartItem && cartItem.qty > 0;
 
     return (
@@ -169,127 +298,114 @@ function ProductCard({ product, cartItem, onAdd, onRemove }) {
             className={[
                 "group relative flex flex-col overflow-hidden border bg-white transition-all duration-300",
                 inCart
-                    ? "border-gold/60 shadow-[0_4px_24px_-4px_rgba(201,169,97,0.25)]"
-                    : "border-charcoal/10 hover:border-charcoal/20",
+                    ? "border-gold/50 shadow-[0_4px_24px_-4px_rgba(201,169,97,0.2)]"
+                    : "border-charcoal/10 hover:border-charcoal/20 hover:shadow-[0_4px_20px_-4px_rgba(0,0,0,0.08)]",
             ].join(" ")}
         >
             {/* Image */}
-            <div className="relative h-44 w-full overflow-hidden">
-                <Image
-                    src={product.img}
-                    alt={product.name}
-                    fill
-                    sizes="(max-width:768px) 100vw, 33vw"
-                    className="object-cover transition-transform duration-700 group-hover:scale-105"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-deep-navy/70 via-deep-navy/10 to-transparent" />
+            {isCement ? (
+                /* Cement: full image visible with contain + white bg */
+                <div className="relative w-full overflow-hidden bg-white" style={{ height: "220px" }}>
+                    <Image
+                        src={product.img}
+                        alt={product.name}
+                        fill
+                        sizes="(max-width:768px) 100vw, 33vw"
+                        className="object-contain p-6 transition-transform duration-700 group-hover:scale-105"
+                    />
+                    {/* subtle bottom fade so name reads cleanly */}
+                    <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-deep-navy/70 to-transparent" />
+                    <div className="absolute bottom-4 left-5 right-5">
+                        <h3 className="font-display text-xl font-bold text-white leading-tight drop-shadow-sm">
+                            {product.name}
+                        </h3>
+                        <p className="mt-0.5 font-body text-[11px] text-white/70 leading-snug">
+                            {product.tagline}
+                        </p>
+                    </div>
+                </div>
+            ) : (
+                /* Steel: cover crop as before */
+                <div className="relative h-52 w-full overflow-hidden">
+                    <Image
+                        src={product.img}
+                        alt={product.name}
+                        fill
+                        sizes="(max-width:768px) 100vw, 33vw"
+                        className="object-cover transition-transform duration-700 group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-deep-navy/80 via-deep-navy/15 to-transparent" />
+                    <div className="absolute bottom-4 left-5 right-5">
+                        <h3 className="font-display text-xl font-bold text-white leading-tight">
+                            {product.name}
+                        </h3>
+                        <p className="mt-0.5 font-body text-[11px] text-white/55 leading-snug">
+                            {product.tagline}
+                        </p>
+                    </div>
+                </div>
+            )}
 
-                {/* Savings badge */}
-                <div className="absolute right-3 top-3 bg-gold px-2 py-1">
-                    <span className="font-body text-[10px] font-bold text-deep-navy">
-                        SAVE {savings(product.marketPrice, product.ourPrice)}%
+            {/* Use case */}
+            {product.useCase && (
+                <div className="border-b border-charcoal/8 px-5 py-3">
+                    <p className="font-body text-[10px] text-charcoal/45">
+                        <span className="font-semibold uppercase tracking-wider text-charcoal/35">Used for · </span>
+                        {product.useCase}
+                    </p>
+                </div>
+            )}
+
+            {/* Brands */}
+            <div className="border-b border-charcoal/8 px-5 py-3 flex flex-wrap gap-1.5">
+                {product.brands.map(b => (
+                    <span key={b} className="border border-charcoal/10 px-2 py-0.5 font-body text-[9px] uppercase tracking-wider text-charcoal/45">
+                        {b}
                     </span>
-                </div>
-
-                {/* Name on image */}
-                <div className="absolute bottom-4 left-4">
-                    <h3 className="font-display text-xl font-bold text-white">{product.name}</h3>
-                    <p className="mt-0.5 font-body text-xs text-white/60">{product.tagline}</p>
-                </div>
+                ))}
             </div>
 
-            {/* Pricing */}
-            <div className="flex items-center justify-between border-b border-charcoal/8 px-5 py-4">
-                <div>
-                    <p className="font-body text-[10px] font-semibold uppercase tracking-[0.2em] text-charcoal/35">
-                        Market Price
-                    </p>
-                    <p className="mt-0.5 font-body text-sm text-charcoal/40 line-through">
-                        {formatPrice(product.marketPrice)}
-                    </p>
-                </div>
-                <div className="text-right">
-                    <p className="font-body text-[10px] font-semibold uppercase tracking-[0.2em] text-gold">
-                        Amit Price
-                    </p>
-                    <p className="mt-0.5 font-display text-xl font-bold text-charcoal">
-                        {formatPrice(product.ourPrice)}
-                    </p>
-                    <p className="font-body text-[9px] text-charcoal/35">{product.unit}</p>
-                </div>
-            </div>
+            {/* CTA buttons */}
+            <div className="mt-auto border-t border-charcoal/8 p-4 flex gap-2">
 
-            {/* Specs toggle */}
-            <button
-                onClick={() => setExpanded((p) => !p)}
-                className="flex w-full items-center justify-between px-5 py-3 text-left transition-colors duration-200 hover:bg-soft-gray"
-            >
-                <span className="font-body text-xs font-semibold uppercase tracking-[0.18em] text-charcoal/50">
-                    Specifications
-                </span>
-                {expanded
-                    ? <ChevronUp size={14} className="text-charcoal/40" />
-                    : <ChevronDown size={14} className="text-charcoal/40" />
-                }
-            </button>
-
-            <AnimatePresence>
-                {expanded && (
-                    <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: "auto", opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        transition={{ duration: 0.3, ease }}
-                        className="overflow-hidden"
+                {/* Know More — steel products only */}
+                {product.hasTechSpecs && product.slug && (
+                    <Link
+                        href={`/products/${product.slug}`}
+                        className="flex flex-1 items-center justify-center gap-1.5 border border-charcoal/20 py-2.5 font-body text-xs font-semibold uppercase tracking-widest text-charcoal/60 hover:border-gold/50 hover:text-charcoal transition-all duration-300"
                     >
-                        <div className="flex flex-col gap-2 border-t border-charcoal/8 px-5 py-4">
-                            {product.specs.map((s) => (
-                                <div key={s.label} className="flex items-start gap-3">
-                                    <span className="w-20 shrink-0 font-body text-[10px] font-semibold uppercase tracking-[0.15em] text-charcoal/35">
-                                        {s.label}
-                                    </span>
-                                    <span className="font-body text-xs text-charcoal/65">{s.value}</span>
-                                </div>
-                            ))}
-                            {/* Brands */}
-                            <div className="mt-2 flex flex-wrap gap-1.5">
-                                {product.brands.map((b) => (
-                                    <span key={b} className="border border-charcoal/10 px-2 py-0.5 font-body text-[10px] uppercase tracking-wider text-charcoal/50">
-                                        {b}
-                                    </span>
-                                ))}
-                            </div>
-                        </div>
-                    </motion.div>
+                        Know More <ArrowRight size={12} />
+                    </Link>
                 )}
-            </AnimatePresence>
 
-            {/* Add to enquiry */}
-            <div className="mt-auto border-t border-charcoal/8 p-4">
+                {/* Add / Remove from Enquiry */}
                 {!inCart ? (
                     <button
                         onClick={() => onAdd(product)}
-                        className="flex w-full items-center justify-center gap-2 bg-deep-navy py-3 font-body text-xs font-semibold uppercase tracking-widest text-white transition-all duration-300 hover:bg-gold hover:text-deep-navy"
+                        className={[
+                            "flex items-center justify-center gap-2 bg-deep-navy py-2.5 font-body text-xs font-semibold uppercase tracking-widest text-white transition-all duration-300 hover:bg-gold hover:text-deep-navy",
+                            product.hasTechSpecs && product.slug ? "flex-1" : "w-full",
+                        ].join(" ")}
                     >
-                        <Plus size={13} />
-                        Add to Enquiry
+                        <Plus size={13} /> Add to Enquiry
                     </button>
                 ) : (
-                    <div className="flex items-center justify-between gap-3">
+                    <div className={[
+                        "flex items-center gap-2",
+                        product.hasTechSpecs && product.slug ? "flex-1" : "w-full",
+                    ].join(" ")}>
                         <button
                             onClick={() => onRemove(product.id)}
-                            className="flex h-10 w-10 shrink-0 items-center justify-center border border-charcoal/15 transition-colors hover:border-red-300 hover:text-red-400"
+                            className="flex h-10 w-10 shrink-0 items-center justify-center border border-charcoal/15 hover:border-red-300 hover:text-red-400 transition-colors"
                         >
                             <Minus size={14} />
                         </button>
-                        <div className="flex flex-1 items-center justify-center gap-2 bg-gold/10 py-2.5 border border-gold/30">
-                            <span className="font-body text-xs font-semibold text-gold">
-                                ✓ Added to Enquiry
-                            </span>
+                        <div className="flex flex-1 items-center justify-center border border-gold/30 bg-gold/8 py-2.5">
+                            <span className="font-body text-xs font-semibold text-gold">✓ Added</span>
                         </div>
                         <button
                             onClick={() => onAdd(product)}
-                            className="flex h-10 w-10 shrink-0 items-center justify-center border border-charcoal/15 transition-colors hover:border-gold hover:text-gold"
+                            className="flex h-10 w-10 shrink-0 items-center justify-center border border-charcoal/15 hover:border-gold hover:text-gold transition-colors"
                         >
                             <Plus size={14} />
                         </button>
@@ -300,17 +416,13 @@ function ProductCard({ product, cartItem, onAdd, onRemove }) {
     );
 }
 
-// ── Enquiry Sidebar / Summary ─────────────────────────────────────────────
+// ─── Enquiry Sidebar ──────────────────────────────────────────────────────────
 function EnquirySidebar({ cart, onRemove, onClear }) {
     const [name, setName] = useState("");
     const [phone, setPhone] = useState("");
     const [sent, setSent] = useState(false);
 
-    const totalMarket = cart.reduce((s, i) => s + i.marketPrice * i.qty, 0);
-    const totalOurs = cart.reduce((s, i) => s + i.ourPrice * i.qty, 0);
-    const totalSaving = totalMarket - totalOurs;
-
-    function buildWhatsApp() {
+    function buildWA() {
         const lines = [
             `🏗️ *PRODUCT ENQUIRY*`,
             `━━━━━━━━━━━━━━━━━━━━`,
@@ -318,109 +430,73 @@ function EnquirySidebar({ cart, onRemove, onClear }) {
             `👤 *Name:* ${name || "Not provided"}`,
             `📞 *Phone:* ${phone || "Not provided"}`,
             ``,
-            `━━━━━━━━━━━━━━━━━━━━`,
             `🛒 *ITEMS REQUESTED*`,
             `━━━━━━━━━━━━━━━━━━━━`,
-            ...cart.map((i, idx) => `${idx + 1}. *${i.name}*\n    Qty: ${i.qty} ${i.unit}\n    Price: ${formatPrice(i.ourPrice * i.qty)}`),
+            ...cart.map((i, idx) => `${idx + 1}. *${i.name}*\n    Qty: ${i.qty} ${i.unit}`),
             ``,
-            `━━━━━━━━━━━━━━━━━━━━`,
-            `💰 *PRICE SUMMARY*`,
-            `━━━━━━━━━━━━━━━━━━━━`,
-            `Market Price:  ~${formatPrice(totalMarket)}~`,
-            `*Amit Price:   ${formatPrice(totalOurs)}*`,
-            `✅ *You Save:  ${formatPrice(totalSaving)}*`,
-            ``,
-            `━━━━━━━━━━━━━━━━━━━━`,
+            `_Please confirm pricing, availability and delivery._`,
             `_Sent via amitsteel.co.in_`,
         ];
-        const msg = encodeURIComponent(lines.join("\n"));
-        const num = "919880844526";
-        window.open(`https://wa.me/${num}?text=${msg}`, "_blank");
+        window.open(`https://wa.me/919880844526?text=${encodeURIComponent(lines.join("\n"))}`, "_blank");
         setSent(true);
-        setTimeout(() => { setSent(false); onClear(); }, 3000);
+        setTimeout(() => { setSent(false); onClear(); }, 3500);
     }
 
     if (cart.length === 0) {
         return (
-            <div className="flex flex-col items-center justify-center gap-3 py-12 text-center">
+            <div className="flex flex-col items-center justify-center gap-3 py-14 text-center">
                 <div className="flex h-14 w-14 items-center justify-center border border-charcoal/10 bg-soft-gray">
-                    <MessageCircle size={22} className="text-charcoal/25" />
+                    <MessageCircle size={22} className="text-charcoal/20" />
                 </div>
-                <p className="font-body text-sm font-semibold text-charcoal/40">
-                    Your enquiry list is empty
-                </p>
-                <p className="font-body text-xs text-charcoal/30">
-                    Add products from the left to build your enquiry
-                </p>
+                <p className="font-body text-sm font-semibold text-charcoal/35">Enquiry list is empty</p>
+                <p className="font-body text-xs text-charcoal/25">Add products to build your enquiry</p>
             </div>
         );
     }
 
     return (
-        <div className="flex flex-col gap-5">
-            {/* Items */}
-            <div className="flex flex-col gap-2">
-                {cart.map((item) => (
-                    <div key={item.id} className="flex items-center justify-between gap-3 border border-charcoal/8 bg-white p-3">
-                        <div className="min-w-0 flex-1">
-                            <p className="font-body text-sm font-semibold text-charcoal">{item.name}</p>
-                            <p className="font-body text-xs text-charcoal/40">
-                                {item.qty} {item.unit} · {formatPrice(item.ourPrice * item.qty)}
-                            </p>
-                        </div>
-                        <button
-                            onClick={() => onRemove(item.id)}
-                            className="flex h-7 w-7 shrink-0 items-center justify-center text-charcoal/25 hover:text-red-400"
-                        >
-                            <X size={13} />
-                        </button>
+        <div className="flex flex-col gap-4">
+            {cart.map(item => (
+                <div key={item.id} className="flex items-center gap-3 border border-charcoal/8 bg-white p-3">
+                    <div className="min-w-0 flex-1">
+                        <p className="font-body text-sm font-semibold text-charcoal">{item.name}</p>
+                        <p className="font-body text-xs text-charcoal/40">{item.qty} {item.unit}</p>
                     </div>
-                ))}
-            </div>
+                    <button
+                        onClick={() => onRemove(item.id)}
+                        className="flex h-7 w-7 shrink-0 items-center justify-center text-charcoal/20 hover:text-red-400 transition-colors"
+                    >
+                        <X size={13} />
+                    </button>
+                </div>
+            ))}
 
-            {/* Price summary */}
             <div className="border border-charcoal/10 bg-soft-gray p-4">
-                <div className="flex justify-between font-body text-sm text-charcoal/50">
-                    <span>Market Price</span>
-                    <span className="line-through">{formatPrice(totalMarket)}</span>
-                </div>
-                <div className="mt-2 flex justify-between font-body text-sm font-semibold text-charcoal">
-                    <span>Amit Price</span>
-                    <span className="text-charcoal">{formatPrice(totalOurs)}</span>
-                </div>
-                <div className="mt-2 flex justify-between border-t border-charcoal/10 pt-2 font-body text-sm font-bold text-gold">
-                    <span>You Save</span>
-                    <span>{formatPrice(totalSaving)}</span>
-                </div>
-                <p className="mt-2 font-body text-[10px] text-charcoal/35">
-                    * Prices indicative. Final quote on confirmation.
+                <p className="font-body text-xs text-charcoal/50 leading-relaxed">
+                    Our team will confirm best pricing, availability and delivery timeline within 2 hours of receiving your enquiry.
                 </p>
             </div>
 
-            {/* Customer details */}
             <div className="flex flex-col gap-2">
-                <p className="font-body text-[10px] font-semibold uppercase tracking-[0.2em] text-charcoal/40">
-                    Your Details
-                </p>
+                <p className="font-body text-[10px] font-semibold uppercase tracking-[0.2em] text-charcoal/40">Your Details</p>
                 <input
                     type="text"
                     placeholder="Your Name"
                     value={name}
-                    onChange={(e) => setName(e.target.value)}
+                    onChange={e => setName(e.target.value)}
                     className="border border-charcoal/15 bg-white px-4 py-2.5 font-body text-sm text-charcoal placeholder:text-charcoal/30 focus:border-gold focus:outline-none"
                 />
                 <input
                     type="tel"
                     placeholder="Phone Number"
                     value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
+                    onChange={e => setPhone(e.target.value)}
                     className="border border-charcoal/15 bg-white px-4 py-2.5 font-body text-sm text-charcoal placeholder:text-charcoal/30 focus:border-gold focus:outline-none"
                 />
             </div>
 
-            {/* Send via WhatsApp */}
             <button
-                onClick={buildWhatsApp}
+                onClick={buildWA}
                 disabled={sent}
                 className={[
                     "flex w-full items-center justify-center gap-2.5 py-3.5 font-body text-sm font-semibold uppercase tracking-widest transition-all duration-300",
@@ -433,45 +509,35 @@ function EnquirySidebar({ cart, onRemove, onClear }) {
                 {sent ? "Sent! We'll call you." : "Send Enquiry on WhatsApp"}
             </button>
 
-            {/* Or call */}
             <a
                 href={`tel:${CONTACT.phones[0].replace(/\s/g, "")}`}
-                className="flex w-full items-center justify-center gap-2 border border-charcoal/15 py-3 font-body text-xs font-semibold uppercase tracking-widest text-charcoal/60 transition-all duration-200 hover:border-gold/40 hover:text-charcoal"
+                className="flex w-full items-center justify-center gap-2 border border-charcoal/15 py-3 font-body text-xs font-semibold uppercase tracking-widest text-charcoal/55 hover:border-gold/40 hover:text-charcoal transition-all"
             >
-                <Phone size={13} />
-                Or Call Us Directly
+                <Phone size={13} /> Or Call Us Directly
             </a>
         </div>
     );
 }
 
-// ── Main Page ──────────────────────────────────────────────────────────────
+// ─── Main Page ────────────────────────────────────────────────────────────────
 export default function ProductsContent() {
-    const [activeTab, setActiveTab] = useState("steel");
+    const [activeCategory, setActiveCategory] = useState(null);
     const [cart, setCart] = useState([]);
 
     function addToCart(product) {
-        setCart((prev) => {
-            const existing = prev.find((i) => i.id === product.id);
-            if (existing) {
-                return prev.map((i) =>
-                    i.id === product.id ? { ...i, qty: i.qty + 1 } : i
-                );
-            }
+        setCart(prev => {
+            const ex = prev.find(i => i.id === product.id);
+            if (ex) return prev.map(i => i.id === product.id ? { ...i, qty: i.qty + 1 } : i);
             return [...prev, { ...product, qty: 1 }];
         });
     }
+    function removeFromCart(id) { setCart(prev => prev.filter(i => i.id !== id)); }
+    function clearCart() { setCart([]); }
 
-    function removeFromCart(id) {
-        setCart((prev) => prev.filter((i) => i.id !== id));
-    }
-
-    function clearCart() {
-        setCart([]);
-    }
-
-    const activeCategory = CATEGORIES.find((c) => c.id === activeTab);
     const cartCount = cart.reduce((s, i) => s + i.qty, 0);
+    const displayCatalogue = activeCategory
+        ? CATALOGUE.filter(c => c.category === activeCategory)
+        : CATALOGUE;
 
     return (
         <main className="min-h-screen bg-off-white">
@@ -480,154 +546,159 @@ export default function ProductsContent() {
             <div className="relative overflow-hidden bg-deep-navy pb-20 pt-36 md:pb-24 md:pt-44">
                 <div
                     className="pointer-events-none absolute -left-40 top-0 h-[500px] w-[500px] rounded-full opacity-[0.06]"
-                    style={{ background: "radial-gradient(circle, #C9A961 0%, transparent 70%)" }}
+                    style={{ background: "radial-gradient(circle,#C9A961 0%,transparent 70%)" }}
                     aria-hidden="true"
                 />
                 <Container>
                     <motion.p
-                        initial={{ opacity: 0, y: 12 }}
-                        animate={{ opacity: 1, y: 0 }}
+                        initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5, ease }}
                         className="mb-5 font-body text-[11px] font-semibold uppercase tracking-[0.35em] text-gold/60"
                     >
                         Products
                     </motion.p>
                     <motion.h1
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
+                        initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.7, ease, delay: 0.07 }}
                         className="font-display font-bold leading-[1.04] text-white"
-                        style={{ fontSize: "clamp(2.5rem, 6vw, 4.5rem)" }}
+                        style={{ fontSize: "clamp(2.5rem,6vw,4.5rem)" }}
                     >
                         Build your enquiry.<br />
                         <span className="italic text-gold">We'll do the rest.</span>
                     </motion.h1>
                     <motion.p
-                        initial={{ opacity: 0, y: 14 }}
-                        animate={{ opacity: 1, y: 0 }}
+                        initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.6, ease, delay: 0.15 }}
-                        className="mt-5 max-w-xl font-body text-base text-white/50 md:text-lg"
+                        className="mt-5 max-w-xl font-body text-sm text-white/50 md:text-base"
                     >
-                        Select what you need · See our price vs market · Send to WhatsApp in one tap.
+                        Select what you need · Share your list · Our team calls back with the best price within 2 hours.
                     </motion.p>
-
-                    {/* How it works — 3 steps */}
                     <motion.div
-                        initial={{ opacity: 0, y: 14 }}
-                        animate={{ opacity: 1, y: 0 }}
+                        initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.6, ease, delay: 0.25 }}
                         className="mt-10 flex flex-wrap items-center gap-6 md:gap-10"
                     >
                         {[
                             { step: "01", text: "Browse & add products" },
-                            { step: "02", text: "See market vs Amit price" },
-                            { step: "03", text: "Send enquiry on WhatsApp" },
+                            { step: "02", text: "Enter your details" },
+                            { step: "03", text: "We call with the best price" },
                         ].map(({ step, text }, i) => (
                             <div key={step} className="flex items-center gap-3">
                                 {i > 0 && <ArrowRight size={14} className="hidden text-gold/30 md:block" />}
-                                <div className="flex items-center gap-2.5">
-                                    <span className="font-display text-sm font-bold italic text-gold/60">{step}</span>
-                                    <span className="font-body text-sm text-white/55">{text}</span>
-                                </div>
+                                <span className="font-display text-sm font-bold italic text-gold/60">{step}</span>
+                                <span className="font-body text-sm text-white/55">{text}</span>
                             </div>
                         ))}
                     </motion.div>
                 </Container>
             </div>
 
-            {/* Gold rule */}
             <div className="h-1 bg-gradient-to-r from-transparent via-gold to-transparent opacity-30" aria-hidden="true" />
 
-            {/* ── MAIN LAYOUT: Products + Sidebar ── */}
+            {/* ── MAIN ── */}
             <Container className="py-12 md:py-16">
                 <div className="grid grid-cols-1 gap-8 lg:grid-cols-12 lg:gap-10">
 
-                    {/* ── LEFT: Product listing ── */}
+                    {/* LEFT: Products */}
                     <div className="lg:col-span-8">
 
                         {/* Category tabs */}
-                        <div className="mb-8 inline-flex border border-charcoal/12" role="tablist">
-                            {CATEGORIES.map((cat) => {
-                                const isActive = activeTab === cat.id;
-                                return (
-                                    <button
-                                        key={cat.id}
-                                        onClick={() => setActiveTab(cat.id)}
-                                        role="tab"
-                                        aria-selected={isActive}
-                                        className={[
-                                            "relative inline-flex min-h-[44px] items-center gap-2 px-6 py-3 font-body text-xs font-semibold uppercase tracking-widest transition-colors duration-300",
-                                            isActive ? "text-deep-navy" : "text-charcoal/40 hover:text-charcoal/70",
-                                        ].join(" ")}
-                                    >
-                                        {isActive && (
-                                            <motion.span
-                                                layoutId="productTab"
-                                                className="absolute inset-0 bg-gold"
-                                                transition={{ duration: 0.35, ease }}
-                                                aria-hidden="true"
-                                            />
-                                        )}
-                                        <span className="relative z-10">{cat.label}</span>
-                                        <span className={`relative z-10 text-[10px] ${isActive ? "text-deep-navy/60" : "text-charcoal/25"}`}>
-                                            {cat.products.length}
-                                        </span>
-                                    </button>
-                                );
-                            })}
+                        <div className="mb-10 flex flex-wrap gap-2" role="tablist">
+                            <button
+                                onClick={() => setActiveCategory(null)}
+                                className={[
+                                    "px-4 py-2 font-body text-xs font-semibold uppercase tracking-widest transition-colors duration-300",
+                                    activeCategory === null
+                                        ? "bg-gold text-deep-navy"
+                                        : "border border-charcoal/15 text-charcoal/50 hover:text-charcoal",
+                                ].join(" ")}
+                            >
+                                All Products
+                            </button>
+                            {CATALOGUE.map(cat => (
+                                <button
+                                    key={cat.category}
+                                    onClick={() => setActiveCategory(cat.category)}
+                                    className={[
+                                        "px-4 py-2 font-body text-xs font-semibold uppercase tracking-widest transition-colors duration-300",
+                                        activeCategory === cat.category
+                                            ? "bg-gold text-deep-navy"
+                                            : "border border-charcoal/15 text-charcoal/50 hover:text-charcoal",
+                                    ].join(" ")}
+                                >
+                                    {cat.category}
+                                </button>
+                            ))}
                         </div>
 
-                        {/* Product grid */}
+                        {/* Category sections */}
                         <AnimatePresence mode="wait">
                             <motion.div
-                                key={activeTab}
-                                initial={{ opacity: 0, y: 10 }}
+                                key={activeCategory || "all"}
+                                initial={{ opacity: 0, y: 8 }}
                                 animate={{ opacity: 1, y: 0 }}
-                                exit={{ opacity: 0, y: -10 }}
-                                transition={{ duration: 0.35, ease }}
-                                className="grid grid-cols-1 gap-4 sm:grid-cols-2"
+                                exit={{ opacity: 0 }}
+                                transition={{ duration: 0.3, ease }}
                             >
-                                {activeCategory.products.map((product) => (
-                                    <ProductCard
-                                        key={product.id}
-                                        product={product}
-                                        cartItem={cart.find((i) => i.id === product.id)}
-                                        onAdd={addToCart}
-                                        onRemove={removeFromCart}
-                                    />
-                                ))}
+                                {displayCatalogue.map((cat, ci) => {
+                                    const isCementCategory = cat.category === "Cement";
+                                    return (
+                                        <div key={cat.category} className={ci > 0 ? "mt-16" : ""}>
+                                            <div className="mb-8 flex items-end justify-between border-b border-charcoal/10 pb-5">
+                                                <div>
+                                                    <p className="font-body text-[10px] font-semibold uppercase tracking-[0.3em] text-gold mb-1.5">
+                                                        {cat.category}
+                                                    </p>
+                                                    <h2 className="font-display text-2xl font-bold text-charcoal md:text-3xl">
+                                                        {cat.tagline}
+                                                    </h2>
+                                                </div>
+                                                <span className="shrink-0 font-body text-[11px] text-charcoal/30 mb-1">
+                                                    {cat.products.length} products
+                                                </span>
+                                            </div>
+                                            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                                                {cat.products.map(product => (
+                                                    <ProductCard
+                                                        key={product.id}
+                                                        product={product}
+                                                        cartItem={cart.find(i => i.id === product.id)}
+                                                        onAdd={addToCart}
+                                                        onRemove={removeFromCart}
+                                                        isCement={isCementCategory}
+                                                    />
+                                                ))}
+                                            </div>
+                                        </div>
+                                    );
+                                })}
                             </motion.div>
                         </AnimatePresence>
 
-                        {/* Not sure section */}
-                        <div className="mt-10 flex flex-col items-start gap-4 border border-charcoal/10 bg-white p-6 sm:flex-row sm:items-center sm:justify-between md:p-8">
+                        {/* Not sure block */}
+                        <div className="mt-14 flex flex-col items-start gap-4 border border-charcoal/10 bg-white p-6 sm:flex-row sm:items-center sm:justify-between md:p-8">
                             <div>
-                                <p className="font-display text-lg font-bold text-charcoal md:text-xl">
-                                    Not sure what you need?
-                                </p>
+                                <p className="font-display text-lg font-bold text-charcoal md:text-xl">Not sure what you need?</p>
                                 <p className="mt-1 font-body text-sm text-charcoal/50">
-                                    Our team responds within 2 hours. Tell us your project — we'll recommend.
+                                    Tell us your project. Our team responds in 2 hours with the right recommendation.
                                 </p>
                             </div>
                             <Link
                                 href="/contact"
-                                className="inline-flex shrink-0 items-center gap-2 border border-charcoal/15 px-5 py-3 font-body text-xs font-semibold uppercase tracking-widest text-charcoal/70 transition-all duration-300 hover:border-gold/40 hover:text-charcoal"
+                                className="inline-flex shrink-0 items-center gap-2 border border-charcoal/15 px-5 py-3 font-body text-xs font-semibold uppercase tracking-widest text-charcoal/65 hover:border-gold/40 hover:text-charcoal transition-all duration-300"
                             >
                                 Talk to Us <ArrowRight size={13} />
                             </Link>
                         </div>
                     </div>
 
-                    {/* ── RIGHT: Enquiry sidebar ── */}
+                    {/* RIGHT: Enquiry Sidebar */}
                     <div className="lg:col-span-4">
                         <div className="sticky top-28">
-                            {/* Header */}
                             <div className="flex items-center justify-between border border-b-0 border-charcoal/12 bg-deep-navy px-5 py-4">
                                 <div className="flex items-center gap-2.5">
                                     <MessageCircle size={16} className="text-gold" strokeWidth={1.5} />
-                                    <span className="font-body text-sm font-semibold uppercase tracking-widest text-white">
-                                        My Enquiry
-                                    </span>
+                                    <span className="font-body text-sm font-semibold uppercase tracking-widest text-white">My Enquiry</span>
                                 </div>
                                 {cartCount > 0 && (
                                     <div className="flex items-center gap-2">
@@ -636,28 +707,21 @@ export default function ProductsContent() {
                                         </span>
                                         <button
                                             onClick={clearCart}
-                                            className="font-body text-[10px] text-white/30 hover:text-white/60"
+                                            className="font-body text-[10px] text-white/30 hover:text-white/60 transition-colors"
                                         >
                                             Clear
                                         </button>
                                     </div>
                                 )}
                             </div>
-
-                            {/* Sidebar body */}
                             <div className="border border-charcoal/12 bg-soft-gray p-5">
-                                <EnquirySidebar
-                                    cart={cart}
-                                    onRemove={removeFromCart}
-                                    onClear={clearCart}
-                                />
+                                <EnquirySidebar cart={cart} onRemove={removeFromCart} onClear={clearCart} />
                             </div>
                         </div>
                     </div>
 
                 </div>
             </Container>
-
         </main>
     );
 }
